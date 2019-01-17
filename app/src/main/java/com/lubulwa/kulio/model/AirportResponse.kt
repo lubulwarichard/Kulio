@@ -19,13 +19,21 @@ data class AirportResource(
 data class Airports(
     @SerializedName("Airport")
     @Expose
-    val airport: ArrayList<Airport>
+    val airport: ArrayList<Airport>,
+
+    @SerializedName("Airport")
+    @Expose
+    val airportSingle: Airport
 )
 
 data class Airport(
     @SerializedName("AirportCode")
     @Expose
     val airportCode: String,
+
+    @SerializedName("Position")
+    @Expose
+    val position: Position,
 
     @SerializedName("CityCode")
     @Expose
@@ -39,8 +47,20 @@ data class Airport(
     @Expose
     val names: Names
 ): Serializable {
-    override fun toString(): String {
-        return "Airport(airportCode='$airportCode', cityCode='$cityCode', countryCode='$countryCode', names=$names)"
+    data class Position(
+        @SerializedName("Coordinate")
+        @Expose
+        val coordinate: Coordinate
+    ) {
+        data class Coordinate(
+            @SerializedName("Latitude")
+            @Expose
+            val latitude: Double,
+
+            @SerializedName("Longitude")
+            @Expose
+            val longitude: Double
+        )
     }
 }
 

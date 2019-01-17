@@ -18,6 +18,15 @@ interface ApiService {
         @Query("lang") lang: String = "en"
     ): Observable<Response<AirportResponse>>
 
+    @GET("references/airports/{airportCode}")
+    fun searchAirport(
+        @Path("airportCode") airportCode: String,
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int,
+        @Query("LHoperated") lhOperated: String = "0",
+        @Query("lang") lang: String = "en"
+    ): Observable<Response<AirportResponse>>
+
     @POST("oauth/token")
     @FormUrlEncoded
     fun getAccessToken(
