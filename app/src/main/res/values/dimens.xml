@@ -9,6 +9,6 @@
     <dimen name="flight_card_view_inside_padding">5dp</dimen>
 
     <dimen name="font_size_27sp">27sp</dimen>
-    <dimen name="airport_from_to_height">60dp</dimen>
+    <dimen name="airport_from_to_height">80dp</dimen>
 
 </resources>

@@ -29,14 +29,16 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
-        setupToolbar()
         setupViews()
         initStuff()
+        setupToolbar()
     }
 
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        supportActionBar!!.title = passedOriginAirport.airportCode +" - "+ passedDestAirport.airportCode
     }
 
     private fun setupViews() {
@@ -72,8 +74,8 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             .include(destinationPosition)
             .build()
 
-        addMapMarker(originPosition, passedOriginAirport.airportCode)
-        addMapMarker(destinationPosition, passedDestAirport.airportCode)
+        addMapMarker(originPosition, passedOriginAirport.names.name.airportName)
+        addMapMarker(destinationPosition, passedDestAirport.names.name.airportName)
 
         mMap.addPolyline(PolylineOptions()
             .add(originPosition, destinationPosition)

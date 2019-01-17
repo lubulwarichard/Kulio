@@ -16,4 +16,6 @@
     <string name="depart">Depart</string>
     <string name="no_date_selected">No date selected</string>
     <string name="return_label">Return</string>
+    <string name="select_origin_airport">Select Origin Airport</string>
+    <string name="select_dest_airport">Select Destination Airport</string>
 </resources>

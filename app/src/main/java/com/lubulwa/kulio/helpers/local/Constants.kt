@@ -9,6 +9,8 @@ object Constants {
     val grant_type = "client_credentials"
     var access_token = ""
 
+    val SELECT_AIRPORT_CAT_INTENT_DATA = "select_airport_cat_intent_data"
+
     val AIRPORTS_INTENT_FILTER = "airports_intent_filter"
     val AIRPORTS_INTENT_DATA = "airports_intent_data"
 

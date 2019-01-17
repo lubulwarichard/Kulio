@@ -39,6 +39,12 @@ class SelectAirportActivity : BaseActivity(), SelectAirportContract.View, Airpor
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        if (intent.getBooleanExtra(Constants.SELECT_AIRPORT_CAT_INTENT_DATA, true)) {
+            supportActionBar!!.title = getString(R.string.select_origin_airport)
+        } else {
+            supportActionBar!!.title = getString(R.string.select_dest_airport)
+        }
     }
 
     private fun initStuff() {

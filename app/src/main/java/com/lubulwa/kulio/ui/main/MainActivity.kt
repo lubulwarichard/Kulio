@@ -17,17 +17,15 @@ import com.lubulwa.kulio.helpers.local.KulioUtlis
 import com.lubulwa.kulio.model.Airport
 import com.lubulwa.kulio.model.Flight
 import com.lubulwa.kulio.model.FlightsResponse
-import com.lubulwa.kulio.model.Schedule
 import com.lubulwa.kulio.presenter.HomePresenter
 import com.lubulwa.kulio.ui.component.FlightSchedulesAdapter
 import com.lubulwa.kulio.ui.interfaces.HomeContract
 import kotlinx.android.synthetic.main.activity_main.*
-import timber.log.Timber
 
 class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.ItemListener {
 
     private var isRequestingOriginAirport: Boolean = true
-    private lateinit var lbm: LocalBroadcastManager
+    private var lbm: LocalBroadcastManager? = null
 
     lateinit var homePresenter: HomePresenter
     private var flightSchedulesAdapter: FlightSchedulesAdapter? = null
@@ -47,7 +45,6 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
     private fun initToolbar() {
         setSupportActionBar(toolbar)
-        supportActionBar!!.title = getString(R.string.search_flights)
     }
 
     private fun initStuff() {
@@ -58,12 +55,16 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
         layout_origin_airport.setOnClickListener {
             isRequestingOriginAirport = true
-            startActivity(Intent(this, SelectAirportActivity::class.java))
+            val intent = Intent(this, SelectAirportActivity::class.java)
+            intent.putExtra(Constants.SELECT_AIRPORT_CAT_INTENT_DATA, isRequestingOriginAirport)
+            startActivity(intent)
         }
 
         layout_destination_airport.setOnClickListener {
             isRequestingOriginAirport = false
-            startActivity(Intent(this, SelectAirportActivity::class.java))
+            val intent = Intent(this, SelectAirportActivity::class.java)
+            intent.putExtra(Constants.SELECT_AIRPORT_CAT_INTENT_DATA, isRequestingOriginAirport)
+            startActivity(intent)
         }
 
         search_flights_button.setOnClickListener {
@@ -117,9 +118,11 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
                 if (isRequestingOriginAirport) {
                     originAirport = airportItem
                     tv_origin_airport.text = airportItem.airportCode
+                    tv_origin_airport_name.text = airportItem.names.name.airportName
                 } else {
                     destinationAirport = airportItem
                     tv_destination_airport.text = airportItem.airportCode
+                    tv_destination_airport_name.text = airportItem.names.name.airportName
                 }
             }
         }
@@ -135,7 +138,9 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
     override fun onDestroy() {
         super.onDestroy()
-        lbm.unregisterReceiver(receiver)
+        if (lbm != null) {
+            lbm!!.unregisterReceiver(receiver)
+        }
     }
 
 }
