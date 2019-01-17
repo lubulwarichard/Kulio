@@ -34,6 +34,9 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
     lateinit var flightsArrayList: ArrayList<Flight>
 
+    lateinit var originAirport: Airport
+    lateinit var destinationAirport: Airport
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -109,8 +112,10 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
                 val airportItem = intent.getSerializableExtra(Constants.AIRPORTS_INTENT_DATA) as Airport
                 Timber.v("onReceive: ${airportItem.toString()}")
                 if (isRequestingOriginAirport) {
+                    originAirport = airportItem
                     tv_origin_airport.text = airportItem.airportCode
                 } else {
+                    destinationAirport = airportItem
                     tv_destination_airport.text = airportItem.airportCode
                 }
             }
@@ -120,6 +125,10 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
     override fun onFlightItemClicked(flightItem: Flight) {
         val intent = Intent(this, MapActivity::class.java)
         intent.putExtra(Constants.FLIGHT_INTENT_DATA, flightItem)
+        intent.putExtra(Constants.ORIGIN_AIRPORT_INTENT_DATA, originAirport)
+        intent.putExtra(Constants.DEST_AIRPORT_INTENT_DATA, destinationAirport)
+        Timber.v("originAirport"+originAirport.toString())
+        Timber.v("destinationAirport"+destinationAirport.toString())
         startActivity(intent)
     }
 

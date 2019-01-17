@@ -40,12 +40,12 @@ data class Flight(
         @SerializedName("ScheduledTimeLocal")
         @Expose
         val scheduledTimeLocal: ScheduledTimeLocal
-    ) {
+    ) : Serializable {
         data class ScheduledTimeLocal(
             @SerializedName("DateTime")
             @Expose
             val dateTime: String
-        )
+        ) : Serializable
     }
 
     data class Arrival(
@@ -56,5 +56,5 @@ data class Flight(
         @SerializedName("ScheduledTimeLocal")
         @Expose
         val scheduledTimeLocal: Departure.ScheduledTimeLocal
-    )
+    ) : Serializable
 }

@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.lubulwa.kulio.R
 import com.lubulwa.kulio.base.BaseActivity
 import com.lubulwa.kulio.helpers.local.Constants
+import com.lubulwa.kulio.model.Airport
 import com.lubulwa.kulio.model.AirportResponse
 import com.lubulwa.kulio.model.Flight
 import com.lubulwa.kulio.presenter.MapPresenter
@@ -21,15 +22,14 @@ import com.lubulwa.kulio.ui.interfaces.MapContract
 class MapActivity : BaseActivity(), OnMapReadyCallback, MapContract.View, GoogleMap.OnMarkerClickListener {
 
     private lateinit var passedFlightItem: Flight
+    private lateinit var passedOriginAirport: Airport
+    private lateinit var passedDestAirport: Airport
 
     lateinit var mMap: GoogleMap
 
     lateinit var progressDialog: ProgressDialog
 
     lateinit var mapPresenter: MapPresenter
-
-    lateinit var originPosition: LatLng
-    lateinit var destPosition: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +45,9 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, MapContract.View, Google
         mapPresenter = MapPresenter(this)
 
         passedFlightItem = intent.getSerializableExtra(Constants.FLIGHT_INTENT_DATA) as Flight
+        passedOriginAirport = intent.getSerializableExtra(Constants.ORIGIN_AIRPORT_INTENT_DATA) as Airport
+        passedDestAirport = intent.getSerializableExtra(Constants.DEST_AIRPORT_INTENT_DATA) as Airport
 
-        mapPresenter.getAirportLocationOrigin(passedFlightItem.departure.airportCode)
-        mapPresenter.getAirportLocationDestination(passedFlightItem.arrival.airportCode)
     }
 
     private fun setupViews() {
@@ -58,6 +58,18 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, MapContract.View, Google
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap!!
         mMap.setOnMarkerClickListener (this)
+
+        val originPosition = LatLng(
+            passedOriginAirport.position.coordinate.latitude,
+            passedOriginAirport.position.coordinate.longitude
+        )
+
+        val destinationPosition = LatLng(
+            passedDestAirport.position.coordinate.latitude,
+            passedDestAirport.position.coordinate.longitude
+        )
+        addMapMarker(originPosition, passedOriginAirport.airportCode)
+        addMapMarker(destinationPosition, passedDestAirport.airportCode)
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
@@ -77,32 +89,6 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, MapContract.View, Google
             .build()
 
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-    }
-
-    override fun onGetAirportLocStarted() {
-
-    }
-
-    override fun onGetAirportLocSuccess(airportResponse: AirportResponse, isOrigin: Boolean) {
-        val position = LatLng(
-            airportResponse.airportResource.airports.airportSingle.position.coordinate.latitude,
-            airportResponse.airportResource.airports.airportSingle.position.coordinate.longitude
-        )
-
-        if (isOrigin) {
-            originPosition = position
-        } else {
-            destPosition = position
-        }
-
-        addMapMarker(
-            position,
-            airportResponse.airportResource.airports.airportSingle.airportCode
-        )
-    }
-
-    override fun onGetAirportLocFailed(errorMessage: String, errorCode: Int) {
-
     }
 
 }

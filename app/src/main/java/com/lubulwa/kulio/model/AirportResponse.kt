@@ -19,11 +19,7 @@ data class AirportResource(
 data class Airports(
     @SerializedName("Airport")
     @Expose
-    val airport: ArrayList<Airport>,
-
-    @SerializedName("Airport")
-    @Expose
-    val airportSingle: Airport
+    val airport: ArrayList<Airport>
 )
 
 data class Airport(
@@ -51,7 +47,7 @@ data class Airport(
         @SerializedName("Coordinate")
         @Expose
         val coordinate: Coordinate
-    ) {
+    ) : Serializable {
         data class Coordinate(
             @SerializedName("Latitude")
             @Expose
@@ -60,22 +56,23 @@ data class Airport(
             @SerializedName("Longitude")
             @Expose
             val longitude: Double
-        )
+        ): Serializable
     }
+
+    data class Names(
+        @SerializedName("Name")
+        @Expose
+        val name: Name
+    ) : Serializable
+
+    data class Name(
+        @SerializedName("@LanguageCode")
+        @Expose
+        val languageCode: String,
+
+        @SerializedName("$")
+        @Expose
+        val airportName: String
+    ) : Serializable
+
 }
-
-data class Names(
-    @SerializedName("Name")
-    @Expose
-    val name: Name
-)
-
-data class Name(
-    @SerializedName("@LanguageCode")
-    @Expose
-    val languageCode: String,
-
-    @SerializedName("$")
-    @Expose
-    val airportName: String
-)
