@@ -1,14 +1,19 @@
 <resources>
     <string name="app_name">Kulio</string>
     <string name="select_airport_activity_name">Select Airport</string>
+    <string name="airport_map_activity_name">Trip</string>
 
     <string name="search_flights">Search Flights</string>
     <string name="passenger_class_hint">1 Traveller(s), Class (Economy)</string>
     <string name="loading">Loading…</string>
     <string name="initialization_failed">Initialization failed, please try again later</string>
     <string name="network_fail">Please connect to a network</string>
-    <string name="from">From</string>
-    <string name="to">To</string>
+    <string name="origin">Origin</string>
+    <string name="destination">Destination</string>
     <string name="default_from_airport">AAR</string>
     <string name="default_to_airport">ABJ</string>
+    <string name="select_origin_dest">Please select an origin and destination</string>
+    <string name="depart">Depart</string>
+    <string name="no_date_selected">No date selected</string>
+    <string name="return_label">Return</string>
 </resources>

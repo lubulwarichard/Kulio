@@ -2,24 +2,20 @@ package com.lubulwa.kulio.ui.main
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.view.MenuItem
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.lubulwa.kulio.R
 import com.lubulwa.kulio.base.BaseActivity
 import com.lubulwa.kulio.helpers.local.Constants
 import com.lubulwa.kulio.model.Airport
-import com.lubulwa.kulio.model.AirportResponse
 import com.lubulwa.kulio.model.Flight
-import com.lubulwa.kulio.presenter.MapPresenter
-import com.lubulwa.kulio.ui.interfaces.MapContract
+import kotlinx.android.synthetic.main.activity_map.*
 
-class MapActivity : BaseActivity(), OnMapReadyCallback, MapContract.View, GoogleMap.OnMarkerClickListener {
+class MapActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var passedFlightItem: Flight
     private lateinit var passedOriginAirport: Airport
@@ -29,30 +25,32 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, MapContract.View, Google
 
     lateinit var progressDialog: ProgressDialog
 
-    lateinit var mapPresenter: MapPresenter
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
 
+        setupToolbar()
         setupViews()
         initStuff()
     }
 
-    private fun initStuff() {
-        progressDialog = ProgressDialog(this)
-
-        mapPresenter = MapPresenter(this)
-
-        passedFlightItem = intent.getSerializableExtra(Constants.FLIGHT_INTENT_DATA) as Flight
-        passedOriginAirport = intent.getSerializableExtra(Constants.ORIGIN_AIRPORT_INTENT_DATA) as Airport
-        passedDestAirport = intent.getSerializableExtra(Constants.DEST_AIRPORT_INTENT_DATA) as Airport
-
+    private fun setupToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun setupViews() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
+    }
+
+    private fun initStuff() {
+        progressDialog = ProgressDialog(this)
+
+        passedFlightItem = intent.getSerializableExtra(Constants.FLIGHT_INTENT_DATA) as Flight
+        passedOriginAirport = intent.getSerializableExtra(Constants.ORIGIN_AIRPORT_INTENT_DATA) as Airport
+        passedDestAirport = intent.getSerializableExtra(Constants.DEST_AIRPORT_INTENT_DATA) as Airport
+
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -68,27 +66,46 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, MapContract.View, Google
             passedDestAirport.position.coordinate.latitude,
             passedDestAirport.position.coordinate.longitude
         )
+
+        val latLngBounds = LatLngBounds.Builder()
+            .include(originPosition)
+            .include(destinationPosition)
+            .build()
+
         addMapMarker(originPosition, passedOriginAirport.airportCode)
         addMapMarker(destinationPosition, passedDestAirport.airportCode)
+
+        mMap.addPolyline(PolylineOptions()
+            .add(originPosition, destinationPosition)
+            .width(5f)
+            .color(R.color.colorPrimary))
+
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        val padding = (width * 0.12).toInt()
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, width, height, padding))
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
-        return true
+        return false
     }
 
-    fun addMapMarker(position: LatLng, name: String) {
+    private fun addMapMarker(position: LatLng, name: String) {
         mMap.addMarker(
             MarkerOptions()
             .position(position)
             .title(name)
         )
+    }
 
-        val cameraPosition = CameraPosition.Builder()
-            .target(position)
-            .zoom(15f)
-            .build()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
 
-        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+            else -> return super.onOptionsItemSelected(item)
+        }
+        return false
     }
 
 }

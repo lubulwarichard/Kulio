@@ -34,8 +34,8 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
     lateinit var flightsArrayList: ArrayList<Flight>
 
-    lateinit var originAirport: Airport
-    lateinit var destinationAirport: Airport
+    var originAirport: Airport? = null
+    var destinationAirport: Airport? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,15 +67,19 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
         }
 
         search_flights_button.setOnClickListener {
-            if (flightSchedulesAdapter != null) {
-                flightSchedulesAdapter!!.mValues.clear()
-                flightSchedulesAdapter!!.notifyDataSetChanged()
+            if (originAirport != null && destinationAirport != null) {
+                if (flightSchedulesAdapter != null) {
+                    flightSchedulesAdapter!!.mValues.clear()
+                    flightSchedulesAdapter!!.notifyDataSetChanged()
+                }
+                homePresenter.findScheduledFlights(
+                    originAirport!!.airportCode,
+                    destinationAirport!!.airportCode,
+                    KulioUtlis.getTomorrowsDate()
+                )
+            } else {
+                Toast.makeText(this, getString(R.string.select_origin_dest), Toast.LENGTH_LONG).show()
             }
-            homePresenter.findScheduledFlights(
-                tv_origin_airport.text.toString(),
-                tv_destination_airport.text.toString(),
-                KulioUtlis.getTomorrowsDate()
-            )
         }
 
         val layoutManager = LinearLayoutManager(this);
@@ -110,7 +114,6 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
         override fun onReceive(context: Context, intent: Intent?) {
             if (intent != null) {
                 val airportItem = intent.getSerializableExtra(Constants.AIRPORTS_INTENT_DATA) as Airport
-                Timber.v("onReceive: ${airportItem.toString()}")
                 if (isRequestingOriginAirport) {
                     originAirport = airportItem
                     tv_origin_airport.text = airportItem.airportCode
@@ -127,8 +130,6 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
         intent.putExtra(Constants.FLIGHT_INTENT_DATA, flightItem)
         intent.putExtra(Constants.ORIGIN_AIRPORT_INTENT_DATA, originAirport)
         intent.putExtra(Constants.DEST_AIRPORT_INTENT_DATA, destinationAirport)
-        Timber.v("originAirport"+originAirport.toString())
-        Timber.v("destinationAirport"+destinationAirport.toString())
         startActivity(intent)
     }
 
