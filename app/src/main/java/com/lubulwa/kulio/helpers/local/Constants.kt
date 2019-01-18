@@ -1,11 +1,12 @@
 package com.lubulwa.kulio.helpers.local
 
+import com.lubulwa.kulio.BuildConfig
 import com.lubulwa.kulio.R
 
 object Constants {
 
-    val api_key = "gk3rw7kftx88bb45qzm6wzb9"
-    val api_secret = "5xQY2Pv9Y9"
+    val api_key = BuildConfig.LufthansaApiKey
+    val api_secret = BuildConfig.LufthansaSecretKey
     val grant_type = "client_credentials"
     var access_token = ""
 

@@ -1,7 +1,8 @@
 package com.lubulwa.kulio.ui.main
 
-import android.opengl.Visibility
+import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
@@ -9,16 +10,13 @@ import android.view.View
 import android.widget.Toast
 import com.lubulwa.kulio.R
 import com.lubulwa.kulio.base.BaseActivity
+import com.lubulwa.kulio.helpers.local.Constants
 import com.lubulwa.kulio.model.Airport
 import com.lubulwa.kulio.model.AirportResponse
 import com.lubulwa.kulio.presenter.SelectAirportPresenter
 import com.lubulwa.kulio.ui.interfaces.SelectAirportContract
 import dance.krantz.com.danceapp.adapters.AirportsAdapter
 import kotlinx.android.synthetic.main.activity_select_airport.*
-import android.support.v4.content.LocalBroadcastManager
-import android.content.Intent
-import android.content.BroadcastReceiver
-import com.lubulwa.kulio.helpers.local.Constants
 
 
 class SelectAirportActivity : BaseActivity(), SelectAirportContract.View, AirportsAdapter.ItemListener {

@@ -39,7 +39,7 @@ class SelectAirportPresenter(var view: SelectAirportContract.View) : SelectAirpo
                 }
 
                 override fun onError(e: Throwable) {
-                    view.searchAirportsFailed(e.localizedMessage, 0)
+                    view.searchAirportsFailed(e.localizedMessage)
                 }
 
 

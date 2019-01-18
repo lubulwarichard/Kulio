@@ -45,7 +45,7 @@ class AuthPresenter(var view: AuthContract.View) : AuthContract.Presenter {
                 }
 
                 override fun onError(e: Throwable) {
-                    view.getTokenFailed(e.localizedMessage, 0)
+                    view.getTokenFailed(e.localizedMessage)
                 }
 
             })

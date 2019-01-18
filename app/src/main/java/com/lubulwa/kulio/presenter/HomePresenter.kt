@@ -44,7 +44,7 @@ class HomePresenter(var view: HomeContract.View) : HomeContract.Presenter {
                 }
 
                 override fun onError(e: Throwable) {
-                    view.findScheduledFlightsFailed(e.localizedMessage, 0)
+                    view.findScheduledFlightsFailed(e.localizedMessage)
                 }
 
 

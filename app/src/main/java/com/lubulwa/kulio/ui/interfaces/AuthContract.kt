@@ -7,7 +7,7 @@ interface AuthContract {
     interface View {
         fun getTokenStarted()
         fun getTokenSuccess(tokenResponse: TokenResponse)
-        fun getTokenFailed(errorMessage: String, errorCode: Int)
+        fun getTokenFailed(errorMessage: String, errorCode: Int = 0)
     }
 
     interface Presenter {

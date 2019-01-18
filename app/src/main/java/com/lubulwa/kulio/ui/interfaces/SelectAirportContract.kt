@@ -7,7 +7,7 @@ interface SelectAirportContract {
     interface View {
         fun searchAirportsStarted()
         fun searchAirportsSuccess(airportResponse: AirportResponse)
-        fun searchAirportsFailed(errorMessage: String, errorCode: Int)
+        fun searchAirportsFailed(errorMessage: String, errorCode: Int = 0)
     }
 
     interface Presenter {
