@@ -10,7 +10,7 @@ interface SelectAirportContract {
     }
 
     interface Presenter {
-        fun searchAirports()
+        fun searchAirports(offset: Int, fetchCount: Int)
     }
 
 }

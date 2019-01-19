@@ -24,7 +24,6 @@ class HomePresenter(var view: HomeContract.View) : HomeContract.Presenter {
      */
     @SuppressLint("CheckResult")
     override fun findScheduledFlights(origin: String, destination: String, dateTime: String) {
-        Timber.v("departure date: $dateTime")
         view.findScheduledFlightsStarted()
 
         mAPIService.getFlights(origin, destination, dateTime, 40, 0)

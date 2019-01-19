@@ -18,9 +18,9 @@ class SelectAirportPresenter(var view: SelectAirportContract.View) : SelectAirpo
      * Method to search airports available
      */
     @SuppressLint("CheckResult")
-    override fun searchAirports(){
+    override fun searchAirports(offset: Int, fetchCount: Int){
 
-        mAPIService.searchAirports(40, 0)
+        mAPIService.searchAirports(fetchCount, offset)
             .retry(3)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

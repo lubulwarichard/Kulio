@@ -14,17 +14,17 @@ import com.lubulwa.kulio.helpers.local.Constants
 import com.lubulwa.kulio.model.Airport
 import com.lubulwa.kulio.model.AirportResponse
 import com.lubulwa.kulio.presenter.SelectAirportPresenter
+import com.lubulwa.kulio.ui.component.InfiniteScrollListener
 import com.lubulwa.kulio.ui.interfaces.SelectAirportContract
 import dance.krantz.com.danceapp.adapters.AirportsAdapter
 import kotlinx.android.synthetic.main.activity_select_airport.*
-
 
 class SelectAirportActivity : BaseActivity(), SelectAirportContract.View, AirportsAdapter.ItemListener {
 
     lateinit var selectAirportPresenter: SelectAirportPresenter
     lateinit var airportsAdapter: AirportsAdapter
 
-    lateinit var airportsArrayList: ArrayList<Airport>
+    private var airportsArrayList: ArrayList<Airport> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,24 +49,35 @@ class SelectAirportActivity : BaseActivity(), SelectAirportContract.View, Airpor
 
         selectAirportPresenter = SelectAirportPresenter(this)
 
-        selectAirportPresenter.searchAirports()
+        selectAirportPresenter.searchAirports(0, 20)
 
         val layoutManager = LinearLayoutManager(this);
         rv_airports.layoutManager = layoutManager;
+
+        airportsAdapter = AirportsAdapter(this, airportsArrayList, this)
+        rv_airports.adapter = airportsAdapter
 
         val mDividerItemDecoration = DividerItemDecoration(
             rv_airports.context,
             layoutManager.orientation
         )
         rv_airports.addItemDecoration(mDividerItemDecoration)
+        rv_airports.addOnScrollListener(object : InfiniteScrollListener(){
+
+            override fun loadMore() {
+                Toast.makeText(this@SelectAirportActivity, getString(R.string.list_load_more_msg), Toast.LENGTH_SHORT).show()
+                val offset = rv_airports.getAdapter()!!.getItemCount()
+                selectAirportPresenter.searchAirports(offset, 20)
+            }
+
+        })
     }
 
     override fun searchAirportsSuccess(airportResponse: AirportResponse) {
         pb_loading_airports.visibility = View.GONE
-        airportsArrayList = airportResponse.airportResource.airports.airport
+        airportsArrayList.addAll(airportResponse.airportResource.airports.airport)
 
-        airportsAdapter = AirportsAdapter(this, airportsArrayList, this)
-        rv_airports.adapter = airportsAdapter
+        airportsAdapter.notifyDataSetChanged()
     }
 
     override fun searchAirportsFailed(errorMessage: String, errorCode: Int) {
