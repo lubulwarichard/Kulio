@@ -145,7 +145,7 @@
                             android:orientation="horizontal">
 
                         <LinearLayout
-                                android:id="@+id/depart_layout"
+                                android:id="@+id/depart_date_layout"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
@@ -188,7 +188,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                                android:id="@+id/return_layout"
+                                android:id="@+id/return_date_layout"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"

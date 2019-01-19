@@ -19,7 +19,6 @@ class SelectAirportPresenter(var view: SelectAirportContract.View) : SelectAirpo
      */
     @SuppressLint("CheckResult")
     override fun searchAirports(){
-        view.searchAirportsStarted()
 
         mAPIService.searchAirports(40, 0)
             .retry(3)

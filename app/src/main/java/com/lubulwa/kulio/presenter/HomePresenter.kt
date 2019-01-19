@@ -9,6 +9,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
+import timber.log.Timber
 
 class HomePresenter(var view: HomeContract.View) : HomeContract.Presenter {
 
@@ -23,7 +24,7 @@ class HomePresenter(var view: HomeContract.View) : HomeContract.Presenter {
      */
     @SuppressLint("CheckResult")
     override fun findScheduledFlights(origin: String, destination: String, dateTime: String) {
-
+        Timber.v("departure date: $dateTime")
         view.findScheduledFlightsStarted()
 
         mAPIService.getFlights(origin, destination, dateTime, 40, 0)

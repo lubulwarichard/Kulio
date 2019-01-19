@@ -61,10 +61,6 @@ class SelectAirportActivity : BaseActivity(), SelectAirportContract.View, Airpor
         rv_airports.addItemDecoration(mDividerItemDecoration)
     }
 
-    override fun searchAirportsStarted() {
-
-    }
-
     override fun searchAirportsSuccess(airportResponse: AirportResponse) {
         pb_loading_airports.visibility = View.GONE
         airportsArrayList = airportResponse.airportResource.airports.airport

@@ -1,15 +1,16 @@
 package com.lubulwa.kulio.ui.main
 
+import android.app.DatePickerDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import android.widget.Toast
 import com.lubulwa.kulio.R
 import com.lubulwa.kulio.base.BaseActivity
 import com.lubulwa.kulio.helpers.local.Constants
@@ -21,6 +22,9 @@ import com.lubulwa.kulio.presenter.HomePresenter
 import com.lubulwa.kulio.ui.component.FlightSchedulesAdapter
 import com.lubulwa.kulio.ui.interfaces.HomeContract
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.ItemListener {
 
@@ -34,6 +38,8 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
     var originAirport: Airport? = null
     var destinationAirport: Airport? = null
+
+    var depart_date: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +73,22 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
             startActivity(intent)
         }
 
+        depart_date_layout.setOnClickListener {
+            val datePickerDialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener {
+                    datePicker, year, month, day ->
+                    val calendar = Calendar.getInstance()
+                    calendar.set(year, month, day)
+
+                    val format = SimpleDateFormat("yyyy-MM-dd'T'hh:mm", Locale.US)
+
+                    depart_date = format.format(calendar.time)
+                    val new_month = month +1
+                    depart_date_tv.text = "$year-$new_month-$day"
+                }, year, month, dayOfMonth)
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis()
+            datePickerDialog.show()
+        }
+
         search_flights_button.setOnClickListener {
             if (originAirport != null && destinationAirport != null) {
                 if (flightSchedulesAdapter != null) {
@@ -76,10 +98,11 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
                 homePresenter.findScheduledFlights(
                     originAirport!!.airportCode,
                     destinationAirport!!.airportCode,
-                    KulioUtlis.getTomorrowsDate()
+                    (if (depart_date == null) KulioUtlis.getTomorrowsDate() else depart_date)!!
                 )
+
             } else {
-                Toast.makeText(this, getString(R.string.select_origin_dest), Toast.LENGTH_LONG).show()
+                Snackbar.make(coordinatorLayout, getString(R.string.select_origin_dest), Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -108,7 +131,7 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
     override fun findScheduledFlightsFailed(errorMessage: String, errorCode: Int) {
         pb_loading_schedules.visibility = View.GONE
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
+        Snackbar.make(coordinatorLayout, errorMessage, Snackbar.LENGTH_LONG).show()
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -141,6 +164,7 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
         if (lbm != null) {
             lbm!!.unregisterReceiver(receiver)
         }
+        finish()
     }
 
 }

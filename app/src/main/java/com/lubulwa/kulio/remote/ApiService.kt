@@ -1,5 +1,6 @@
 package com.lubulwa.kulio.remote
 
+import com.lubulwa.kulio.helpers.local.Constants
 import com.lubulwa.kulio.model.AirportResource
 import com.lubulwa.kulio.model.AirportResponse
 import com.lubulwa.kulio.model.FlightsResponse
@@ -32,7 +33,7 @@ interface ApiService {
     fun getAccessToken(
         @Field("client_id") client_id: String,
         @Field("client_secret") client_secret: String,
-        @Field("grant_type") grantType: String = "client_credentials"
+        @Field("grant_type") grantType: String = Constants.grant_type
     ): Observable<Response<TokenResponse>>
 
     @Headers("Accept: application/json")

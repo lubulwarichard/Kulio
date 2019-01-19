@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 import timber.log.Timber
 
-class AuthPresenter(var view: AuthContract.View) : AuthContract.Presenter {
+open class AuthPresenter(var view: AuthContract.View) : AuthContract.Presenter {
 
     var mAPIService: ApiService = ApiUtils.getAPIService(false)
 
@@ -23,11 +23,10 @@ class AuthPresenter(var view: AuthContract.View) : AuthContract.Presenter {
      * @param grantType Grant Type
      */
     @SuppressLint("CheckResult")
-    override fun getToken(clientId: String, clientSecret: String, grantType: String){
-        view.getTokenStarted()
+    override fun getToken(clientId: String, clientSecret: String){
+        //view.getTokenStarted()
 
-        Timber.v("getToken, $clientId")
-        mAPIService.getAccessToken(clientId, clientSecret, grantType)
+        mAPIService.getAccessToken(clientId, clientSecret)
             .retry(3)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

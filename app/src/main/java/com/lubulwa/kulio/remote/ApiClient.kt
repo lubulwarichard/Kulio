@@ -6,9 +6,10 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class RetrofitClient {
+class ApiClient {
 
     companion object {
 
@@ -36,24 +37,13 @@ class RetrofitClient {
             }
 
             val client = httpClient.build()
+            retrofit = Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .client(client)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
-            if (retrofit == null) {
-                retrofit = Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .client(client)
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-            } else {
-                if (shouldAuthorize) {
-                    retrofit = Retrofit.Builder()
-                        .baseUrl(baseUrl)
-                        .client(client)
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-                }
-            }
             return retrofit!!
         }
 

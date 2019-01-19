@@ -5,7 +5,6 @@ import com.lubulwa.kulio.model.AirportResponse
 interface SelectAirportContract {
 
     interface View {
-        fun searchAirportsStarted()
         fun searchAirportsSuccess(airportResponse: AirportResponse)
         fun searchAirportsFailed(errorMessage: String, errorCode: Int = 0)
     }
