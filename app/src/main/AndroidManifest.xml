@@ -13,10 +13,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="@string/google_maps_api_key" />
+                android:value="@string/google_maps_api_key"/>
 
         <activity android:name=".ui.main.SplashActivity">
             <intent-filter>
@@ -38,6 +37,10 @@
                 android:name=".ui.main.MapActivity"
                 android:configChanges="keyboardHidden|orientation|screenSize"
                 android:label="@string/airport_map_activity_name"/>
+        <activity
+                android:name=".ui.main.SearchFlightsActivity"
+                android:configChanges="keyboardHidden|orientation|screenSize"
+                android:label="@string/search_flight_activity_name"/>
     </application>
 
 </manifest>

@@ -12,7 +12,7 @@ interface HomeContract {
     }
 
     interface Presenter {
-        fun findScheduledFlights(origin: String, destination: String, dateTime: String)
+        fun findScheduledFlights(origin: String, destination: String, dateTime: String, offset: Int, fetchCount: Int)
     }
 
 }

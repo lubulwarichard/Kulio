@@ -2,6 +2,9 @@
 <resources>
     <dimen name="activity_margin">16dp</dimen>
 
+    <dimen name="margin_4dp">4dp</dimen>
+    <dimen name="margin_8dp">8dp</dimen>
+
     <dimen name="flight_card_view_height">200dp</dimen>
     <dimen name="flight_card_view_elevation">3dp</dimen>
     <dimen name="flight_card_view_margin_left">2dp</dimen>
@@ -9,6 +12,7 @@
     <dimen name="flight_card_view_inside_padding">5dp</dimen>
 
     <dimen name="font_size_27sp">27sp</dimen>
+    <dimen name="font_size_17sp">17sp</dimen>
     <dimen name="airport_from_to_height">80dp</dimen>
 
 </resources>

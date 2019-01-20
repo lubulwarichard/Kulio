@@ -7,59 +7,94 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.lubulwa.kulio.R
+import com.lubulwa.kulio.helpers.local.KulioUtlis
 import com.lubulwa.kulio.model.Flight
+import com.lubulwa.kulio.model.Schedule
 import kotlinx.android.synthetic.main.flight_list_item.view.*
+import java.time.Duration
 
-class FlightSchedulesAdapter (context: Context?, values: ArrayList<Flight>, itemListener: FlightSchedulesAdapter.ItemListener): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class FlightSchedulesAdapter (context: Context?, values: ArrayList<Schedule>, itemListener: FlightSchedulesAdapter.ItemListener): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    var mValues: ArrayList<Flight> = values
+    var mValues: ArrayList<Schedule> = values
     private var mListener: ItemListener = itemListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ViewHolderFlight(inflater.inflate(R.layout.flight_list_item, parent, false))
+        return ViewHolderSchedule(inflater.inflate(R.layout.flight_list_item, parent, false))
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        val viewHolderFlight = viewHolder as ViewHolderFlight
-        configureFlightVH(viewHolderFlight, position)
+        val viewHolderSchedule = viewHolder as ViewHolderSchedule
+        configureScheduleVH(viewHolderSchedule, position)
     }
 
-    private fun configureFlightVH(viewHolderFlight: ViewHolderFlight, position: Int) {
-        val flight = mValues.get(position)
-        viewHolderFlight.setData(flight)
+    private fun configureScheduleVH(viewHolderFlight: ViewHolderSchedule, position: Int) {
+        val schedule = mValues.get(position)
+        viewHolderFlight.setData(schedule)
     }
 
-    inner class ViewHolderFlight(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    inner class ViewHolderSchedule(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
 
-        var tvOriginAirport: TextView
-        var tvDestinationAirport: TextView
         var tvOriginAirportTime: TextView
-        var tvDestinationAirportTime: TextView
+        var tvOriginAirport: TextView
 
-        internal lateinit var item: Flight
+        var tvDestinationAirportTime: TextView
+        var tvDestinationAirport: TextView
+
+        var tvFlightDuration: TextView
+        var tvFlightDate: TextView
+        var tvFlightStops: TextView
+        var tvFlightStopsLabel: TextView
+
+        internal lateinit var item: Schedule
 
         init {
             v.flight_list_item.setOnClickListener(this)
 
             tvOriginAirport = v.tv_origin_airport
-            tvDestinationAirport = v.tv_destination_airport
             tvOriginAirportTime = v.tv_origin_airport_time
+
+            tvDestinationAirport = v.tv_destination_airport
             tvDestinationAirportTime = v.tv_destination_airport_time
+
+            tvFlightDuration = v.tv_flight_duration
+            tvFlightDate = v.tv_flight_date
+            tvFlightStops = v.tv_flight_stops
+            tvFlightStopsLabel = v.tv_flight_stops_label
         }
 
-        fun setData(item: Flight) {
+        fun setData(item: Schedule) {
             this.item = item
 
-            tvOriginAirport.text = item.departure.airportCode
-            tvDestinationAirport.text = item.arrival.airportCode
-            tvOriginAirportTime.text = item.departure.scheduledTimeLocal.dateTime
-            tvOriginAirportTime.text = item.arrival.scheduledTimeLocal.dateTime
+            val lastIndex = item.flights.size - 1
+
+            tvOriginAirport.text = item.flights[0].departure.airportCode
+            tvOriginAirportTime.text = KulioUtlis.getTimeFromDateString(item.flights[0].departure.scheduledTimeLocal.dateTime)
+
+            tvDestinationAirport.text = item.flights[lastIndex].arrival.airportCode
+            tvDestinationAirportTime.text = KulioUtlis.getTimeFromDateString(item.flights[lastIndex].arrival.scheduledTimeLocal.dateTime)
+
+            tvFlightDuration.text = KulioUtlis.getFlightDurationFromString(item.totalJourney.duration)
+            tvFlightStops.text = "$lastIndex"
+            tvFlightDate.text = KulioUtlis.getDateFromString(item.flights[0].departure.scheduledTimeLocal.dateTime)
+
+            //Build flight stops
+            tvFlightStopsLabel.text = null
+            tvFlightStopsLabel.append("stops(")
+            for (flight in item.flights) {
+                if (flight != item.flights[lastIndex]){
+                    tvFlightStopsLabel.append(flight.arrival.airportCode)
+                    if (flight != item.flights[lastIndex -1]) {
+                        tvFlightStopsLabel.append("-")
+                    }
+                }
+            }
+            tvFlightStopsLabel.append(")")
         }
 
 
         override fun onClick(view: View) {
-            mListener.onFlightItemClicked(item)
+            mListener.onScheduleItemClicked(item)
         }
     }
 
@@ -68,7 +103,7 @@ class FlightSchedulesAdapter (context: Context?, values: ArrayList<Flight>, item
     }
 
     interface ItemListener {
-        fun onFlightItemClicked(flightItem: Flight)
+        fun onScheduleItemClicked(scheduleItem: Schedule)
     }
 
 }

@@ -66,7 +66,7 @@ class SelectAirportActivity : BaseActivity(), SelectAirportContract.View, Airpor
 
             override fun loadMore() {
                 Toast.makeText(this@SelectAirportActivity, getString(R.string.list_load_more_msg), Toast.LENGTH_SHORT).show()
-                val offset = rv_airports.getAdapter()!!.getItemCount()
+                val offset = rv_airports.adapter!!.itemCount
                 selectAirportPresenter.searchAirports(offset, 20)
             }
 

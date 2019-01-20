@@ -17,10 +17,20 @@ data class ScheduleResource(
 )
 
 data class Schedule(
+    @SerializedName("TotalJourney")
+    @Expose
+    val totalJourney: TotalJourney,
+
     @SerializedName("Flight")
     @Expose
     val flights: ArrayList<Flight>
 )
+
+data class TotalJourney(
+    @SerializedName("Duration")
+    @Expose
+    val duration: String
+): Serializable
 
 data class Flight(
     @SerializedName("Departure")
@@ -29,7 +39,11 @@ data class Flight(
 
     @SerializedName("Arrival")
     @Expose
-    val arrival: Arrival
+    val arrival: Arrival,
+
+    @SerializedName("Details")
+    @Expose
+    val details: Details
 
 ): Serializable {
     data class Departure(
@@ -57,4 +71,16 @@ data class Flight(
         @Expose
         val scheduledTimeLocal: Departure.ScheduledTimeLocal
     ) : Serializable
+
+    data class Details(
+        @SerializedName("Stops")
+        @Expose
+        val stops: Stops
+    ) : Serializable {
+        data class Stops(
+            @SerializedName("StopQuantity")
+            @Expose
+            val stopQuantity: Int
+        ) : Serializable
+    }
 }

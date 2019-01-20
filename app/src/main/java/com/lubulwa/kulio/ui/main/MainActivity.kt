@@ -8,38 +8,25 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.view.View
+import com.bumptech.glide.Glide
 import com.lubulwa.kulio.R
 import com.lubulwa.kulio.base.BaseActivity
 import com.lubulwa.kulio.helpers.local.Constants
-import com.lubulwa.kulio.helpers.local.KulioUtlis
 import com.lubulwa.kulio.model.Airport
-import com.lubulwa.kulio.model.Flight
-import com.lubulwa.kulio.model.FlightsResponse
-import com.lubulwa.kulio.presenter.HomePresenter
-import com.lubulwa.kulio.ui.component.FlightSchedulesAdapter
-import com.lubulwa.kulio.ui.interfaces.HomeContract
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.ItemListener {
+class MainActivity : BaseActivity() {
 
     private var isRequestingOriginAirport: Boolean = true
     private var lbm: LocalBroadcastManager? = null
 
-    lateinit var homePresenter: HomePresenter
-    private var flightSchedulesAdapter: FlightSchedulesAdapter? = null
+    private var originAirport: Airport? = null
+    private var destinationAirport: Airport? = null
 
-    lateinit var flightsArrayList: ArrayList<Flight>
-
-    var originAirport: Airport? = null
-    var destinationAirport: Airport? = null
-
-    var depart_date: String? = null
+    private var departDate: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +41,6 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
     }
 
     private fun initStuff() {
-        homePresenter = HomePresenter(this)
-
         val lbm = LocalBroadcastManager.getInstance(this)
         lbm.registerReceiver(receiver, IntentFilter(Constants.AIRPORTS_INTENT_FILTER));
 
@@ -81,7 +66,7 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
                     val format = SimpleDateFormat("yyyy-MM-dd'T'hh:mm", Locale.US)
 
-                    depart_date = format.format(calendar.time)
+                    departDate = format.format(calendar.time)
                     val new_month = month +1
                     depart_date_tv.text = "$year-$new_month-$day"
                 }, year, month, dayOfMonth)
@@ -91,47 +76,21 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
 
         search_flights_button.setOnClickListener {
             if (originAirport != null && destinationAirport != null) {
-                if (flightSchedulesAdapter != null) {
-                    flightSchedulesAdapter!!.mValues.clear()
-                    flightSchedulesAdapter!!.notifyDataSetChanged()
-                }
-                homePresenter.findScheduledFlights(
-                    originAirport!!.airportCode,
-                    destinationAirport!!.airportCode,
-                    (if (depart_date == null) KulioUtlis.getTomorrowsDate() else depart_date)!!
-                )
-
+                val intent = Intent(this, SearchFlightsActivity::class.java)
+                intent.putExtra(Constants.ORIGIN_AIRPORT_INTENT_DATA, originAirport)
+                intent.putExtra(Constants.DEST_AIRPORT_INTENT_DATA, destinationAirport)
+                intent.putExtra(Constants.DEPART_DATE_INTENT_DATA, departDate)
+                startActivity(intent)
             } else {
                 Snackbar.make(coordinatorLayout, getString(R.string.select_origin_dest), Snackbar.LENGTH_LONG).show()
             }
         }
 
-        val layoutManager = LinearLayoutManager(this);
-        rv_schedules.layoutManager = layoutManager;
+        // add background image
+        Glide.with(this)
+            .load(R.drawable.lufthansa_bg_img)
+            .into(iv_home_bg)
 
-        val mDividerItemDecoration = DividerItemDecoration(
-            rv_schedules.context,
-            layoutManager.orientation
-        )
-        rv_schedules.addItemDecoration(mDividerItemDecoration)
-
-    }
-
-    override fun findScheduledFlightsStarted() {
-        pb_loading_schedules.visibility = View.VISIBLE
-    }
-
-    override fun findScheduledFlightsSuccess(flightsResponse: FlightsResponse?) {
-        pb_loading_schedules.visibility = View.GONE
-        flightsArrayList = flightsResponse!!.scheduleResource.schedule.get(0).flights
-
-        flightSchedulesAdapter = FlightSchedulesAdapter(this, flightsArrayList, this)
-        rv_schedules.adapter = flightSchedulesAdapter
-    }
-
-    override fun findScheduledFlightsFailed(errorMessage: String, errorCode: Int) {
-        pb_loading_schedules.visibility = View.GONE
-        Snackbar.make(coordinatorLayout, errorMessage, Snackbar.LENGTH_LONG).show()
     }
 
     private var receiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -149,14 +108,6 @@ class MainActivity : BaseActivity(), HomeContract.View, FlightSchedulesAdapter.I
                 }
             }
         }
-    }
-
-    override fun onFlightItemClicked(flightItem: Flight) {
-        val intent = Intent(this, MapActivity::class.java)
-        intent.putExtra(Constants.FLIGHT_INTENT_DATA, flightItem)
-        intent.putExtra(Constants.ORIGIN_AIRPORT_INTENT_DATA, originAirport)
-        intent.putExtra(Constants.DEST_AIRPORT_INTENT_DATA, destinationAirport)
-        startActivity(intent)
     }
 
     override fun onDestroy() {

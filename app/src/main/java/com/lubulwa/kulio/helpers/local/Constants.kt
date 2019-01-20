@@ -18,5 +18,6 @@ object Constants {
     val FLIGHT_INTENT_DATA = "flight_intent_data"
     val ORIGIN_AIRPORT_INTENT_DATA = "origin_airport_intent_data"
     val DEST_AIRPORT_INTENT_DATA = "dest_airport_intent_data"
+    val DEPART_DATE_INTENT_DATA = "depart_date_intent_data"
 
 }

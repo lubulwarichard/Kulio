@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.activity_map.*
 
 class MapActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
-    private lateinit var passedFlightItem: Flight
     private lateinit var passedOriginAirport: Airport
     private lateinit var passedDestAirport: Airport
 
@@ -49,7 +48,6 @@ class MapActivity : BaseActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     private fun initStuff() {
         progressDialog = ProgressDialog(this)
 
-        passedFlightItem = intent.getSerializableExtra(Constants.FLIGHT_INTENT_DATA) as Flight
         passedOriginAirport = intent.getSerializableExtra(Constants.ORIGIN_AIRPORT_INTENT_DATA) as Airport
         passedDestAirport = intent.getSerializableExtra(Constants.DEST_AIRPORT_INTENT_DATA) as Airport
 

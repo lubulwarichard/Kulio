@@ -1,6 +1,6 @@
 package com.lubulwa.kulio
 
-import com.lubulwa.kulio.presenter.HomePresenter
+import com.lubulwa.kulio.presenter.SearchFlightsPresenter
 import com.lubulwa.kulio.ui.interfaces.HomeContract
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
@@ -10,7 +10,7 @@ import org.junit.Test
 
 class SearchFlightScheduleTests {
 
-    lateinit var presenter: HomePresenter
+    lateinit var presenter: SearchFlightsPresenter
     lateinit var view: HomeContract.View
 
     @Test
@@ -28,7 +28,7 @@ class SearchFlightScheduleTests {
     @Before
     fun setup() {
         view = mock()
-        presenter = HomePresenter(view)
+        presenter = SearchFlightsPresenter(view)
     }
 
 }
